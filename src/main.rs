@@ -1,8 +1,12 @@
+mod util;
+
+use iced::highlighter::Highlighter;
 use iced::widget::{
     Space, button, column, container, horizontal_space, pick_list, row, text, text_editor,
     text_input,
 };
-use iced::{Element, Length, Padding, Task, Theme, color};
+
+use iced::{Element, Length, Padding, Task, Theme, color, highlighter};
 use reqwest::{Client, Method as ReqwestMethod};
 use std::str::FromStr;
 
@@ -140,6 +144,7 @@ impl RestClient {
                 self.is_loading = false;
                 match result {
                     Ok((body, status, time)) => {
+                        let body = util::make_json_pretty(&body);
                         self.response_text = text_editor::Content::with_text(&body);
                         self.status_text = status;
                         self.time_text = time;
@@ -290,7 +295,15 @@ impl RestClient {
         .spacing(15)
         .padding([10, 0]);
 
-        let editor = text_editor(&self.response_text).on_action(Message::ResponseEditorAction);
+        let editor = text_editor(&self.response_text)
+            .on_action(Message::ResponseEditorAction)
+            .highlight_with::<Highlighter>(
+                highlighter::Settings {
+                    theme: highlighter::Theme::Base16Mocha,
+                    token: "json".to_string(),
+                },
+                |high, _theme| high.to_format(),
+            );
 
         container(
             column![header, Space::with_height(10), tabs, sub_tabs, editor]
