@@ -1,3 +1,4 @@
+mod db;
 mod util;
 
 use iced::highlighter::Highlighter;
