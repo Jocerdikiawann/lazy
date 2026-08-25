@@ -70,13 +70,11 @@ enum Message {
 
 impl RestClient {
     fn new() -> (Self, Task<Message>) {
-        let initial_json = "{\n  \"username\": \"developer@example.com\",\n  \"password\": \"correct-horse-battery-staple\",\n  \"device_id\": \"dev-macbook-pro-2024\"\n}";
-
         (
             Self {
-                url: String::from("https://api.example.com/v1/login"),
+                url: String::from("https://jsonplaceholder.typicode.com/posts"),
                 method: HttpMethod::Post,
-                request_body: text_editor::Content::with_text(initial_json),
+                request_body: text_editor::Content::with_text("{}"),
                 response_text: text_editor::Content::new(),
                 status_text: String::from("-"),
                 time_text: String::from("-"),
