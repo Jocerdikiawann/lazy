@@ -157,6 +157,7 @@ impl RestClient {
                 Task::none()
             }
             Message::RequestEditorAction(action) => {
+                //TODO: LOGIC disini
                 self.request_body.perform(action);
                 Task::none()
             }
@@ -207,6 +208,7 @@ impl RestClient {
 
         let search_bar = text_input("Filter collections...", "").padding(8);
 
+        //TODO: Integration with sqlite
         let folder_tree = column![
             text("Auth API").size(14),
             row![
@@ -241,6 +243,7 @@ impl RestClient {
     }
 
     fn view_request_pane(&self) -> Element<'_, Message> {
+        //TODO: Header count ambil dari response headers api
         let tabs = row![
             text("Params").size(14),
             text("Auth").size(14),
@@ -277,6 +280,8 @@ impl RestClient {
         ]
         .align_y(iced::Alignment::Center);
 
+        //TODO: Count headers ambil dari response headers
+        //TODO:  Cookies ambil dari response
         let tabs = row![
             text("Body").size(14),
             text("Headers 12").size(14),
@@ -316,6 +321,7 @@ impl RestClient {
     }
 
     fn view_workspace(&self) -> Element<'_, Message> {
+        //TODO: Workspace
         let top_bar = row![
             text("Auth API > Login").size(12),
             horizontal_space(),
