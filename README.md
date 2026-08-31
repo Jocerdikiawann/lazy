@@ -1,4 +1,4 @@
-# Lazy
+# Lazy (Under Development)
 
 A lightweight and truly native desktop REST client built for developers who prioritize performance and resource efficiency.
 
