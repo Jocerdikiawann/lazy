@@ -4,7 +4,7 @@ use iced::{
     widget::{column, container, horizontal_space, row, text, text_editor},
 };
 
-pub fn view(state: &'static RestClient) -> Element<'static, Message> {
+pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
     //TODO: Header count ambil dari response headers api
     let tabs = row![
         text("Params").size(14),

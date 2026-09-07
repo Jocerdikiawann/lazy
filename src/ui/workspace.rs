@@ -9,7 +9,7 @@ use iced::{
     widget::{button, column, horizontal_space, pick_list, row, text, text_input},
 };
 
-pub fn view_workspace(state: &'static RestClient) -> Element<'static, Message> {
+pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
     //TODO: Workspace
     let top_bar = row![
         text("Auth API > Login").size(12),

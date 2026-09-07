@@ -4,7 +4,7 @@ use iced::{
     widget::row, widget::text,
 };
 
-pub fn view_navbar() -> Element<'static, Message> {
+pub fn view() -> Element<'static, Message> {
     let logo = text("Lazy").size(24);
     let tabs = row![
         button(text("Collections")).padding([5, 10]),

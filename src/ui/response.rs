@@ -5,7 +5,7 @@ use iced::{
     widget::{Space, column, container, horizontal_space, row, text, text_editor},
 };
 
-pub fn view(state: &'static RestClient) -> Element<'static, Message> {
+pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
     let header = row![
         text("Response").size(16),
         horizontal_space(),
