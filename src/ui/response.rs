@@ -36,14 +36,14 @@ pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
 
     let editor = text_editor(&state.response_text)
         .height(Length::Fill)
+        .on_action(Message::ResponseEditorAction)
         .highlight_with::<Highlighter>(
             highlighter::Settings {
                 theme: highlighter::Theme::Base16Mocha,
                 token: "json".to_string(),
             },
             |high, _theme| high.to_format(),
-        )
-        .on_action(Message::ResponseEditorAction);
+        );
 
     container(
         column![header, Space::with_height(10), tabs, sub_tabs, editor]

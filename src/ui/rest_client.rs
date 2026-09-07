@@ -30,8 +30,8 @@ impl RestClient {
             Self {
                 url: String::from("https://jsonplaceholder.typicode.com/posts"),
                 method: HttpMethod::Post,
-                request_body: text_editor::Content::with_text(""),
-                response_text: text_editor::Content::with_text(""),
+                request_body: text_editor::Content::with_text("{}"),
+                response_text: text_editor::Content::new(),
                 status_text: String::from("-"),
                 time_text: String::from("-"),
                 is_loading: false,
@@ -99,14 +99,16 @@ impl RestClient {
                 match result {
                     Ok((body, status, time)) => {
                         let body = util::make_json_pretty(&body);
+                        self.response_text = text_editor::Content::new();
+                        self.response_text.perform(text_editor::Action::Edit(
+                            text_editor::Edit::Paste(Arc::from(body)),
+                        ));
+                        self.response_text.perform(text_editor::Action::Move(
+                            text_editor::Motion::DocumentStart,
+                        ));
 
-                        self.response_text = text_editor::Content::with_text(&body);
                         self.status_text = status;
                         self.time_text = time;
-
-                        //Tricky sialann......... buat trigger syntax highlight
-                        self.response_text
-                            .perform(text_editor::Action::Edit(text_editor::Edit::Backspace));
                     }
                     Err(err) => {
                         self.response_text =
