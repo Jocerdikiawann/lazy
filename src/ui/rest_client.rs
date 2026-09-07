@@ -8,6 +8,7 @@ use crate::util;
 use iced::{Element, Length};
 use reqwest::{Client, Method as ReqwestMethod};
 use std::str::FromStr;
+use std::sync::Arc;
 
 use super::{navbar, sidebar, workspace};
 
@@ -29,8 +30,8 @@ impl RestClient {
             Self {
                 url: String::from("https://jsonplaceholder.typicode.com/posts"),
                 method: HttpMethod::Post,
-                request_body: text_editor::Content::with_text("{}"),
-                response_text: text_editor::Content::new(),
+                request_body: text_editor::Content::with_text(""),
+                response_text: text_editor::Content::with_text(""),
                 status_text: String::from("-"),
                 time_text: String::from("-"),
                 is_loading: false,
@@ -53,7 +54,6 @@ impl RestClient {
                 self.is_loading = true;
                 self.status_text = String::from("Loading...");
                 self.time_text = String::from("-");
-                self.response_text = text_editor::Content::new();
 
                 let url = self.url.clone();
                 let method =
@@ -99,15 +99,14 @@ impl RestClient {
                 match result {
                     Ok((body, status, time)) => {
                         let body = util::make_json_pretty(&body);
-                        let mut content = text_editor::Content::with_text(&body);
 
-                        content.perform(text_editor::Action::Move(
-                            text_editor::Motion::DocumentStart,
-                        ));
-
-                        self.response_text = content;
+                        self.response_text = text_editor::Content::with_text(&body);
                         self.status_text = status;
                         self.time_text = time;
+
+                        //Tricky sialann......... buat trigger syntax highlight
+                        self.response_text
+                            .perform(text_editor::Action::Edit(text_editor::Edit::Backspace));
                     }
                     Err(err) => {
                         self.response_text =

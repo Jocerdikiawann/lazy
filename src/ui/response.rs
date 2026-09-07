@@ -35,6 +35,7 @@ pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
     .padding([10, 0]);
 
     let editor = text_editor(&state.response_text)
+        .height(Length::Fill)
         .highlight_with::<Highlighter>(
             highlighter::Settings {
                 theme: highlighter::Theme::Base16Mocha,

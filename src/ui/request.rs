@@ -24,7 +24,9 @@ pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
     .spacing(15)
     .padding([10, 0]);
 
-    let editor = text_editor(&state.request_body).on_action(Message::RequestEditorAction);
+    let editor = text_editor(&state.request_body)
+        .height(Length::Fill)
+        .on_action(Message::RequestEditorAction);
 
     container(column![tabs, sub_tabs, editor].spacing(10).padding(15))
         .width(Length::Fill)
