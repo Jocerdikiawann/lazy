@@ -99,7 +99,13 @@ impl RestClient {
                 match result {
                     Ok((body, status, time)) => {
                         let body = util::make_json_pretty(&body);
-                        self.response_text = text_editor::Content::with_text(&body);
+                        let mut content = text_editor::Content::with_text(&body);
+
+                        content.perform(text_editor::Action::Move(
+                            text_editor::Motion::DocumentStart,
+                        ));
+
+                        self.response_text = content;
                         self.status_text = status;
                         self.time_text = time;
                     }

@@ -22,10 +22,15 @@ pub fn generate_curl(req: &RequestData) -> String {
 }
 
 pub fn make_json_pretty(raw_json: &str) -> String {
+    log::info!("trying make json pretty");
     match serde_json::from_str::<serde_json::Value>(raw_json) {
-        Ok(parsed_json) => {
-            serde_json::to_string_pretty(&parsed_json).unwrap_or_else(|_| raw_json.to_string())
+        Ok(parsed_json) => serde_json::to_string_pretty(&parsed_json).unwrap_or_else(|e| {
+            log::error!("failed parsed json {:?}", e);
+            raw_json.to_string()
+        }),
+        Err(e) => {
+            log::error!("failed prettify json {:?}", e);
+            raw_json.to_string()
         }
-        Err(_) => raw_json.to_string(),
     }
 }
