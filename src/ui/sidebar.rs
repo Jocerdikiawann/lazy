@@ -1,4 +1,4 @@
-use crate::enum_lazy::message::Message;
+use crate::enums::message::Message;
 use iced::{
     Element, Length, color,
     widget::{Space, column, container, horizontal_space, row, text, text_input},

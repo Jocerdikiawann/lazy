@@ -1,17 +1,15 @@
 mod client;
 mod db;
-mod enum_lazy;
+mod enums;
 mod ui;
 mod util;
 
-use iced::highlighter::Highlighter;
-use iced::widget::{
-    Space, button, column, container, horizontal_space, pick_list, row, text, text_editor,
-    text_input,
-};
+use iced::widget::{column, container, row, text_editor};
 
-use crate::enum_lazy::method::HttpMethod;
-use iced::{Element, Length, Padding, Task, Theme, color, highlighter};
+use crate::enums::message::Message;
+use crate::enums::method::HttpMethod;
+use crate::ui::sidebar;
+use iced::{Element, Length, Task, Theme};
 use reqwest::{Client, Method as ReqwestMethod};
 use std::str::FromStr;
 
@@ -131,163 +129,10 @@ impl RestClient {
         }
     }
 
-    fn view_navbar(&self) -> Element<'_, Message> {
-        let logo = text("Lazy").size(24);
-        let tabs = row![
-            button(text("Collections")).padding([5, 10]),
-            button(text("History")).padding([5, 10]),
-            button(text("Environments")).padding([5, 10]),
-        ]
-        .spacing(15);
-
-        let settings_icon = text("icon_setting");
-
-        container(
-            row![
-                logo,
-                Space::with_width(30),
-                tabs,
-                horizontal_space(),
-                settings_icon
-            ]
-            .align_y(iced::Alignment::Center)
-            .padding([10, 20]),
-        )
-        .style(|_theme| container::background(color!(0x1A1B26)))
-        .into()
-    }
-
-    fn view_request_pane(&self) -> Element<'_, Message> {
-        //TODO: Header count ambil dari response headers api
-        let tabs = row![
-            text("Params").size(14),
-            text("Auth").size(14),
-            text("Headers 4").size(14),
-            text("Body").size(14),
-        ]
-        .spacing(20);
-
-        let sub_tabs = row![
-            text("JSON").size(13),
-            text("Form").size(13),
-            text("Text").size(13),
-            text("GraphQL").size(13),
-            horizontal_space(),
-        ]
-        .spacing(15)
-        .padding([10, 0]);
-
-        let editor = text_editor(&self.request_body).on_action(Message::RequestEditorAction);
-
-        container(column![tabs, sub_tabs, editor].spacing(10).padding(15))
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .into()
-    }
-
-    fn view_response_pane(&self) -> Element<'_, Message> {
-        let header = row![
-            text("Response").size(16),
-            horizontal_space(),
-            text(format!("{}", self.status_text)).size(12),
-            Space::with_width(10),
-            text(format!("{}", self.time_text)).size(12),
-        ]
-        .align_y(iced::Alignment::Center);
-
-        //TODO: Count headers ambil dari response headers
-        //TODO:  Cookies ambil dari response
-        let tabs = row![
-            text("Body").size(14),
-            text("Headers 12").size(14),
-            text("Cookies 2").size(14),
-        ]
-        .spacing(20);
-
-        let sub_tabs = row![
-            text("Pretty").size(13),
-            text("Raw").size(13),
-            text("Preview").size(13),
-            horizontal_space(),
-            text("Search...").size(13),
-        ]
-        .spacing(15)
-        .padding([10, 0]);
-
-        let editor = text_editor(&self.response_text)
-            .on_action(Message::ResponseEditorAction)
-            .highlight_with::<Highlighter>(
-                highlighter::Settings {
-                    theme: highlighter::Theme::Base16Mocha,
-                    token: "json".to_string(),
-                },
-                |high, _theme| high.to_format(),
-            );
-
-        container(
-            column![header, Space::with_height(10), tabs, sub_tabs, editor]
-                .spacing(10)
-                .padding(15),
-        )
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .style(|_theme| container::background(color!(0x121212)))
-        .into()
-    }
-
-    fn view_workspace(&self) -> Element<'_, Message> {
-        //TODO: Workspace
-        let top_bar = row![
-            text("Auth API > Login").size(12),
-            horizontal_space(),
-            text("⏱ 2 mins ago").size(12)
-        ]
-        .padding([10, 15]);
-
-        let method_picker = pick_list(
-            &HttpMethod::ALL[..],
-            Some(self.method),
-            Message::MethodSelected,
-        )
-        .width(Length::Fixed(90.0));
-
-        let url_input = text_input("Enter URL...", &self.url)
-            .on_input(Message::UrlChanged)
-            .padding(8);
-
-        let send_btn = button(if self.is_loading {
-            text("Sending...")
-        } else {
-            text("Send")
-        })
-        .on_press_maybe(if self.is_loading {
-            None
-        } else {
-            Some(Message::SendRequest)
-        })
-        .padding([8, 20]);
-        let url_bar = row![method_picker, url_input, send_btn]
-            .spacing(10)
-            .padding(Padding {
-                top: 0.0,
-                right: 15.0,
-                bottom: 10.0,
-                left: 15.0,
-            })
-            .align_y(iced::Alignment::Center);
-
-        let panes = row![self.view_request_pane(), self.view_response_pane()];
-
-        column![top_bar, url_bar, panes]
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .into()
-    }
-
     fn view(&self) -> Element<'_, Message> {
         let content = column![
             self.view_navbar(),
-            row![self.view_sidebar(), self.view_workspace()].height(Length::Fill)
+            row![sidebar::view(), self.view_workspace()].height(Length::Fill)
         ];
 
         container(content)
