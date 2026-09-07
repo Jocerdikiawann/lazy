@@ -1,4 +1,7 @@
+mod client;
 mod db;
+mod enum_lazy;
+mod ui;
 mod util;
 
 use iced::highlighter::Highlighter;
@@ -7,44 +10,10 @@ use iced::widget::{
     text_input,
 };
 
+use crate::enum_lazy::method::HttpMethod;
 use iced::{Element, Length, Padding, Task, Theme, color, highlighter};
 use reqwest::{Client, Method as ReqwestMethod};
 use std::str::FromStr;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum HttpMethod {
-    Get,
-    Post,
-    Put,
-    Delete,
-    Patch,
-}
-
-impl HttpMethod {
-    const ALL: [HttpMethod; 5] = [
-        HttpMethod::Get,
-        HttpMethod::Post,
-        HttpMethod::Put,
-        HttpMethod::Delete,
-        HttpMethod::Patch,
-    ];
-}
-
-impl std::fmt::Display for HttpMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                HttpMethod::Get => "GET",
-                HttpMethod::Post => "POST",
-                HttpMethod::Put => "PUT",
-                HttpMethod::Delete => "DELETE",
-                HttpMethod::Patch => "PATCH",
-            }
-        )
-    }
-}
 
 struct RestClient {
     url: String,
@@ -56,16 +25,6 @@ struct RestClient {
     time_text: String,
 
     is_loading: bool,
-}
-
-#[derive(Debug, Clone)]
-enum Message {
-    UrlChanged(String),
-    MethodSelected(HttpMethod),
-    SendRequest,
-    ResponseReceived(Result<(String, String, String), String>),
-    RequestEditorAction(text_editor::Action),
-    ResponseEditorAction(text_editor::Action),
 }
 
 impl RestClient {
@@ -195,50 +154,6 @@ impl RestClient {
             .padding([10, 20]),
         )
         .style(|_theme| container::background(color!(0x1A1B26)))
-        .into()
-    }
-
-    fn view_sidebar(&self) -> Element<'_, Message> {
-        let header = row![
-            text("Collections").size(16),
-            horizontal_space(),
-            text("+").size(16)
-        ]
-        .align_y(iced::Alignment::Center);
-
-        let search_bar = text_input("Filter collections...", "").padding(8);
-
-        //TODO: Integration with sqlite
-        let folder_tree = column![
-            text("Auth API").size(14),
-            row![
-                Space::with_width(20),
-                text("POST  Login").size(13).color(color!(0xFFA500))
-            ],
-            row![
-                Space::with_width(20),
-                text("GET   Profile").size(13).color(color!(0x4169E1))
-            ],
-            row![
-                Space::with_width(20),
-                text("POST  Refresh Token").size(13).color(color!(0xFFA500))
-            ],
-            Space::with_height(10),
-            text("User Management").size(14),
-        ]
-        .spacing(8);
-
-        let footer =
-            column![text("Trash").size(13), text("Collection Settings").size(13)].spacing(10);
-
-        container(
-            column![header, search_bar, folder_tree, horizontal_space(), footer]
-                .spacing(15)
-                .padding(15),
-        )
-        .width(Length::Fixed(250.0))
-        .height(Length::Fill)
-        .style(|_theme| container::background(color!(0x16161E)))
         .into()
     }
 
