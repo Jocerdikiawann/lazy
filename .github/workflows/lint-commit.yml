@@ -1,0 +1,43 @@
+name: Lint Commit Messages
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  check-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Commit Format
+        run: |
+          REGEX="^(feat|fix|docs|style|refactor|test|chore)\(#[0-9]+\):\s.+$"
+          FAILED=0
+
+          COMMITS=$(git log --no-merges --format="%H" origin/${{ github.base_ref }}..HEAD)
+
+          for SHA in $COMMITS; do
+            # Ambil baris pertama dari commit message (subject)
+            SUBJECT=$(git log -1 --format="%s" $SHA)
+            echo "Memeriksa commit [$SHA]: $SUBJECT"
+
+            if [[ ! "$SUBJECT" =~ $REGEX ]]; then
+              echo "::error file=$SHA::Commit message tidak sesuai format: '$SUBJECT'"
+              FAILED=1
+            fi
+          done
+
+          if [ $FAILED -ne 0 ]; then
+            echo ""
+            echo "Format wajib: <tipe>(#<nomor-issue>): <deskripsi>"
+            echo "Tipe yang diizinkan: feat, fix, docs, style, refactor, test, chore"
+            echo "Contoh benar : feat(#12): implementasi form login"
+            echo "Contoh salah : fix bug login / feat: login form"
+            exit 1
+          fi
+
+          echo "commit message valid!"

@@ -1,0 +1,25 @@
+name: Lint Branch Name
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Branch Name
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          REGEX="^(feature|fix)/[0-9]+-[a-z0-9-]+$"
+
+          echo "Checking branch: $BRANCH_NAME"
+
+          if [[ ! "$BRANCH_NAME" =~ $REGEX ]]; then
+            echo "::error::Nama branch '$BRANCH_NAME' tidak valid!"
+            echo "Format wajib: feature/<nomor-issue>-<nama-singkat> atau fix/<nomor-issue>-<nama-singkat>"
+            echo "Contoh: feature/12-form-login"
+            exit 1
+          fi
+
+          echo "branch valid!"
