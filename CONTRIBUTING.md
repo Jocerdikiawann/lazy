@@ -15,16 +15,16 @@ Dokumen ini dibuat agar alur kerja kita tetap rapi dan terkoordinasi.
 ### 1. Clone 
 Clone ke komputer kalian:
 ```bash
-git clone https://github.com/Jocerdikiawann/lazy.git
+git clone https://github.com/Modularity-Community/lazy.git
 cd lazy
 
 ### 2. Create branch
-Buat branch baru dari branch `main` dengan format `feature/<no-issue>-<2-huruf-nama-depan>-<nama-task>` atau `fix/<no-issue>-<2-huruf-nama-depan>-<nama-task>`
+Buat branch baru dari branch `main` dengan format `feature/<no-issue>-<nama-singkat/nama-task>-<nama-task>` atau `fix/<no-issue>-<nama-singkat/nama-task>`
 
 ### 3. Commit dan Push
 Commit perubahanmu lalu push branch langsung ke repositori ini:
 ```bash
-git commit -m "feat: implementasi form login (#12)"
+git commit -m "feat(#12): implementasi form login"
 git push origin feature/12-bu-form-login
 ```
 
