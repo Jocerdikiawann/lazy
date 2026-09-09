@@ -1,16 +1,15 @@
+use iced::widget::text_editor::Edit;
 use iced::{Task, widget::text_editor};
 
 use iced::widget::{column, container, row};
 
+use super::component::{navbar, sidebar, workspace};
 use crate::enums::message::Message;
 use crate::enums::method::HttpMethod;
 use crate::util;
 use iced::{Element, Length};
 use reqwest::{Client, Method as ReqwestMethod};
 use std::str::FromStr;
-use std::sync::Arc;
-
-use super::{navbar, sidebar, workspace};
 
 pub struct RestClient {
     pub url: String,
@@ -99,13 +98,15 @@ impl RestClient {
                 match result {
                     Ok((body, status, time)) => {
                         let body = util::make_json_pretty(&body);
-                        self.response_text = text_editor::Content::new();
-                        self.response_text.perform(text_editor::Action::Edit(
-                            text_editor::Edit::Paste(Arc::from(body)),
-                        ));
+
+                        self.response_text = text_editor::Content::with_text(&body);
+
                         self.response_text.perform(text_editor::Action::Move(
                             text_editor::Motion::DocumentStart,
                         ));
+
+                        self.response_text
+                            .perform(text_editor::Action::Edit(Edit::Backspace));
 
                         self.status_text = status;
                         self.time_text = time;

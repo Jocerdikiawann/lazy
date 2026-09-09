@@ -39,7 +39,7 @@ pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
         .on_action(Message::ResponseEditorAction)
         .highlight_with::<Highlighter>(
             highlighter::Settings {
-                theme: highlighter::Theme::Base16Mocha,
+                theme: highlighter::Theme::Base16Ocean,
                 token: "json".to_string(),
             },
             |high, _theme| high.to_format(),
@@ -51,7 +51,7 @@ pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
                 .spacing(10)
                 .padding(15),
         )
-        .on_right_press(Message::RequestEditorRigthClick),
+        .on_right_press(Message::ResponseEditorRightClick),
     )
     .width(Length::Fill)
     .height(Length::Fill)

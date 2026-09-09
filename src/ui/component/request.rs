@@ -1,7 +1,7 @@
 use crate::{RestClient, enums::message::Message};
 use iced::{
     Element, Length,
-    widget::{column, container, horizontal_space, row, text, text_editor},
+    widget::{column, container, horizontal_space, mouse_area, row, text, text_editor},
 };
 
 pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
@@ -28,7 +28,9 @@ pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
         .height(Length::Fill)
         .on_action(Message::RequestEditorAction);
 
-    container(column![tabs, sub_tabs, editor].spacing(10).padding(15))
+    let editor_area = mouse_area(editor).on_right_press(Message::RequestEditorRigthClick);
+
+    container(column![tabs, sub_tabs, editor_area].spacing(10).padding(15))
         .width(Length::Fill)
         .height(Length::Fill)
         .into()
