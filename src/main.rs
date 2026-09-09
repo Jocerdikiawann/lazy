@@ -1,16 +1,18 @@
 use iced::Theme;
-use log::LevelFilter;
 
 use crate::ui::rest_client::RestClient;
 
 mod client;
 mod db;
 mod enums;
+mod logger;
 mod ui;
 mod util;
 
 fn main() -> iced::Result {
-    log::set_max_level(LevelFilter::max());
+    let _guard = logger::init_logger();
+
+    tracing::info!("Starting App Lazy..");
 
     iced::application("Lazy", RestClient::update, RestClient::view)
         .theme(|_| Theme::Dark)

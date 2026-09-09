@@ -2,7 +2,7 @@ use crate::{RestClient, enums::message::Message};
 use iced::{
     Element, Length, color,
     highlighter::{self, Highlighter},
-    widget::{Space, column, container, horizontal_space, row, text, text_editor},
+    widget::{Space, column, container, horizontal_space, mouse_area, row, text, text_editor},
 };
 
 pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
@@ -46,9 +46,12 @@ pub fn view<'a>(state: &'a RestClient) -> Element<'a, Message> {
         );
 
     container(
-        column![header, Space::with_height(10), tabs, sub_tabs, editor]
-            .spacing(10)
-            .padding(15),
+        mouse_area(
+            column![header, Space::with_height(10), tabs, sub_tabs, editor]
+                .spacing(10)
+                .padding(15),
+        )
+        .on_right_press(Message::RequestEditorRigthClick),
     )
     .width(Length::Fill)
     .height(Length::Fill)

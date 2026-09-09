@@ -131,6 +131,14 @@ impl RestClient {
                     Task::none()
                 }
             }
+            Message::ResponseEditorRightClick => {
+                tracing::info!("Response on right click");
+                Task::none()
+            }
+            Message::RequestEditorRigthClick => {
+                tracing::info!("Request on right click");
+                Task::none()
+            }
         }
     }
 

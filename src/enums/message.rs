@@ -7,5 +7,7 @@ pub enum Message {
     SendRequest,
     ResponseReceived(Result<(String, String, String), String>),
     RequestEditorAction(text_editor::Action),
+    RequestEditorRigthClick,
     ResponseEditorAction(text_editor::Action),
+    ResponseEditorRightClick,
 }
