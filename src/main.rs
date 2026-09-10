@@ -3,7 +3,9 @@ use iced::Theme;
 use crate::ui::rest_client::RestClient;
 
 mod db;
+mod domain;
 mod enums;
+mod infra;
 mod logger;
 mod ui;
 mod util;
